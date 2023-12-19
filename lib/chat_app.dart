@@ -17,7 +17,7 @@ class ChatApp extends StatelessWidget {
         useMaterial3: true,
         primarySwatch: Colors.blue,
         colorScheme: ColorScheme.fromSwatch(
-          primarySwatch: Colors.deepPurple,
+          primarySwatch: Colors.grey,
           backgroundColor: Colors.white,
           accentColor: Colors.blueGrey,
           brightness: Brightness.light,
