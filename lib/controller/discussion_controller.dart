@@ -26,6 +26,9 @@ class DiscussionController extends GetxController {
       }
     }).toList();
 
+    // remove duplicates
+    userIdList = userIdList.toSet().toList();
+
     var users = await FirebaseFirestore.instance
         .collection('users')
         .where('id', whereIn: userIdList)

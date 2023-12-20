@@ -1,12 +1,10 @@
-import 'dart:developer';
 
 import 'package:email_validator/email_validator.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:superchat/controller/auth_controller.dart';
 import 'package:superchat/pages/sign_up_page.dart';
-
 import '../constants.dart';
-import 'home_page.dart';
 
 class SignInPage extends StatefulWidget {
   const SignInPage({super.key});
@@ -32,6 +30,7 @@ class _SignInPageState extends State<SignInPage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final controller = Get.put(AuthController());
 
     return Scaffold(
       appBar: AppBar(
@@ -107,7 +106,7 @@ class _SignInPageState extends State<SignInPage> {
                       const SizedBox(height: Insets.medium),
                       Center(
                         child: ElevatedButton(
-                          onPressed: () => _signIn(),
+                          onPressed: () => controller.signIn(context, _formKey, _emailFieldController.text.trim(), _passwordFieldController.text.trim()),
                           child: const Text('Se connecter'),
                         ),
                       ),
@@ -133,41 +132,5 @@ class _SignInPageState extends State<SignInPage> {
     );
   }
 
-  Future<void> _signIn() async {
-    final scaffoldMessenger = ScaffoldMessenger.of(context);
-    final navigator = Navigator.of(context);
 
-    if (_formKey.currentState?.validate() ?? false) {
-      try {
-        final credential =
-            await FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: _emailFieldController.text.trim(),
-          password: _passwordFieldController.text.trim(),
-        );
-
-        if (credential.user != null) {
-          navigator.pushReplacement(
-              MaterialPageRoute(builder: (_) => const HomePage()));
-        }
-      } on FirebaseAuthException catch (e, stackTrace) {
-        final String errorMessage;
-
-        if (e.code == 'user-not-found') {
-          errorMessage = 'Aucun utilisateur trouvé pour cet email.';
-        } else if (e.code == 'wrong-password') {
-          errorMessage = 'Mot de passe incorrect.';
-        } else {
-          errorMessage = 'Une erreur s\'est produite';
-        }
-
-        log(
-          'Error while signing in: ${e.code}',
-          error: e,
-          stackTrace: stackTrace,
-          name: 'SignInPage',
-        );
-        scaffoldMessenger.showSnackBar(SnackBar(content: Text(errorMessage)));
-      }
-    }
-  }
 }

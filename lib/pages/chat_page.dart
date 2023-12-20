@@ -59,26 +59,13 @@ class ChatPage extends StatelessWidget {
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       final messages = snapshot.data as List<MessageModel>;
-                      final List<types.Message> formatedMessages = [];
                       final currentUser = FirebaseAuth.instance.currentUser;
 
-                      messages
-                          .sort((a, b) => b.createdAt.compareTo(a.createdAt));
+                      messages.sort((a, b) => b.createdAt.compareTo(a.createdAt));
 
-                      messages.forEach((element) {
-                        formatedMessages.add(types.TextMessage(
-                            id: Uuid().v4(),
-                            author: types.User(
-                              id: element.from,
-                              firstName: element.authorName,
-                            ),
-                            text: element.content,
-                            createdAt:
-                                element.createdAt.millisecondsSinceEpoch));
-                      });
 
                       return Chat(
-                        messages: formatedMessages,
+                        messages: messages.map((e) => e.toChatUiMessage()).toList(),
                         onSendPressed: (message) {
                           messageController.sendMessage(user, message.text);
                         },

@@ -55,12 +55,12 @@ class UsersList<T> extends StatelessWidget {
                   },
                 ),
                 onRefresh: () async {
-                  await Future.delayed(const Duration(seconds: 1));
-                  future;
+                  await future;
+                  return;
                 });
           } else {
             return const Center(
-              child: CircularProgressIndicator(),
+              child: Text('Aucune discussion trouvée'),
             );
           }
         } else {

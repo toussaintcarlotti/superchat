@@ -3,9 +3,11 @@ import 'dart:developer';
 import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:superchat/pages/sign_in_page.dart';
 
 import '../constants.dart';
+import '../controller/auth_controller.dart';
 import 'home_page.dart';
 
 class SignUpPage extends StatefulWidget {
@@ -18,6 +20,7 @@ class SignUpPage extends StatefulWidget {
 class _SignUpPageState extends State<SignUpPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
+  final _usernameFieldController = TextEditingController();
   final _emailFieldController = TextEditingController();
   final _passwordFieldController = TextEditingController();
   bool _showPassword = false;
@@ -32,6 +35,7 @@ class _SignUpPageState extends State<SignUpPage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final controller = Get.put(AuthController());
 
     return Scaffold(
       appBar: AppBar(
@@ -55,6 +59,24 @@ class _SignUpPageState extends State<SignUpPage> {
                         'Créez votre compte Superchat',
                         style: theme.textTheme.headlineLarge,
                         textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: Insets.extraLarge),
+                      const Text(
+                        'Nom d\'utilisateur',
+                        textAlign: TextAlign.center,
+                      ),
+                      TextFormField(
+                        controller: _usernameFieldController,
+                        autofillHints: const [AutofillHints.username],
+                        decoration: const InputDecoration(
+                          hintText: 'Nom d\'utilisateur',
+                        ),
+                        keyboardType: TextInputType.name,
+                        textInputAction: TextInputAction.next,
+                        validator: (value) =>
+                            value != null && value.isNotEmpty
+                                ? null
+                                : 'Nom d\'utilisateur invalide',
                       ),
                       const SizedBox(height: Insets.extraLarge),
                       const Text(
@@ -103,7 +125,12 @@ class _SignUpPageState extends State<SignUpPage> {
                       const SizedBox(height: Insets.medium),
                       Center(
                         child: ElevatedButton(
-                          onPressed: () => _signUp(),
+                          onPressed: () => controller.signUp(
+                              context,
+                              _formKey,
+                              _usernameFieldController.text.trim(),
+                              _emailFieldController.text.trim(),
+                              _passwordFieldController.text.trim()),
                           child: const Text('S\'inscrire'),
                         ),
                       ),
@@ -127,43 +154,5 @@ class _SignUpPageState extends State<SignUpPage> {
         ),
       ),
     );
-  }
-
-  Future<void> _signUp() async {
-    final scaffoldMessenger = ScaffoldMessenger.of(context);
-    final navigator = Navigator.of(context);
-
-    if (_formKey.currentState?.validate() ?? false) {
-      try {
-        final credential =
-            await FirebaseAuth.instance.createUserWithEmailAndPassword(
-          email: _emailFieldController.text.trim(),
-          password: _passwordFieldController.text.trim(),
-        );
-
-        if (credential.user != null) {
-          navigator.pushReplacement(
-              MaterialPageRoute(builder: (_) => const HomePage()));
-        }
-      } on FirebaseAuthException catch (e, stackTrace) {
-        final String errorMessage;
-
-        if (e.code == 'weak-password') {
-          errorMessage = 'Le mot de passe est trop faible.';
-        } else if (e.code == 'email-already-in-use') {
-          errorMessage = 'Cet email est déjà associé à un compte existant.';
-        } else {
-          errorMessage = 'Une erreur est survenue.';
-        }
-
-        log(
-          'Error while signing in: ${e.code}',
-          error: e,
-          stackTrace: stackTrace,
-          name: 'SignInPage',
-        );
-        scaffoldMessenger.showSnackBar(SnackBar(content: Text(errorMessage)));
-      }
-    }
   }
 }

@@ -1,4 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
+import 'package:uuid/uuid.dart';
 
 class MessageModel {
   final String from;
@@ -32,6 +35,18 @@ class MessageModel {
       to: data['to'],
       content: data['content'],
       createdAt: data['timestamp'].toDate(),
+    );
+  }
+
+  types.TextMessage toChatUiMessage() {
+    return types.TextMessage(
+        id: Uuid().v4(),
+        author: types.User(
+          id: from,
+          firstName: authorName,
+        ),
+        text: content,
+        createdAt: createdAt.millisecondsSinceEpoch
     );
   }
 }
