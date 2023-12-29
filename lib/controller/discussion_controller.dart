@@ -54,7 +54,7 @@ class DiscussionController extends GetxController {
         .map((event) => event.docs.map((e) {
               var message = MessageModel.fromSnapshot(e);
               if (message.from != currentUser.uid) {
-                message.authorName = user.name;
+                message.authorName = user.name!;
               }
               return message;
             }).toList());

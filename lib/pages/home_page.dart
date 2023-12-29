@@ -1,9 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:get/instance_manager.dart';
 import 'package:superchat/constants.dart';
 import 'package:superchat/controller/discussion_controller.dart';
+import 'package:superchat/pages/profile_page.dart';
 import 'package:superchat/pages/sign_in_page.dart';
 import 'package:superchat/pages/users_page.dart';
 import 'package:superchat/widgets/stream_listener.dart';
@@ -32,6 +34,16 @@ class HomePage extends StatelessWidget {
           title: const Text(kAppTitle),
           backgroundColor: theme.colorScheme.primary,
           actions: [
+            IconButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const ProfilePage()),
+                  );
+                },
+                icon: const Icon(Icons.person)
+            ),
             IconButton(
               icon: const Icon(Icons.chat),
               onPressed: () {

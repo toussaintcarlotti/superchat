@@ -39,7 +39,7 @@ class UsersList<T> extends StatelessWidget {
                           Expanded(
                             child: ListTile(
                                 leading: Icon(Icons.person),
-                                title: Text(users[index].name),
+                                title: Text(users[index].name!),
                                 onTap: () {
                                   Navigator.push(
                                     context,

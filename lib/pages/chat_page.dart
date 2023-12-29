@@ -8,7 +8,6 @@ import 'package:superchat/models/user_model.dart';
 import 'package:superchat/pages/sign_in_page.dart';
 
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
-import 'package:uuid/uuid.dart';
 
 import '../constants.dart';
 import '../controller/message_controller.dart';
@@ -62,7 +61,6 @@ class ChatPage extends StatelessWidget {
                       final currentUser = FirebaseAuth.instance.currentUser;
 
                       messages.sort((a, b) => b.createdAt.compareTo(a.createdAt));
-
 
                       return Chat(
                         messages: messages.map((e) => e.toChatUiMessage()).toList(),

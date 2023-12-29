@@ -1,11 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class UserModel {
-  final String id;
-  final String name;
-  final String? bio;
+  final String? id;
+  late String? name;
+  late String? bio;
 
-  const UserModel({
+  UserModel({
     required this.id,
     required this.name,
     this.bio,
@@ -15,10 +15,9 @@ class UserModel {
         'id': id,
         'displayName': name,
         'bio': bio,
-      };
+  };
 
-  factory UserModel.fromSnapshot(
-      DocumentSnapshot<Map<String, dynamic>> snapshot) {
+  factory UserModel.fromSnapshot(DocumentSnapshot<Map<String, dynamic>> snapshot) {
     final data = snapshot.data()!;
 
     return UserModel(
